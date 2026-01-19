@@ -4,7 +4,7 @@ const App = () => {
   const [balance, setBalance] = useState(0)
   const [search, setSearch] = useState("")
 
-  // Load balance from localStorage on first render
+  // Load balance from localStorage on first renders
   useEffect(() => {
     const saved = localStorage.getItem("balance")
     if (saved) {
