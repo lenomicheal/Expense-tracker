@@ -1,43 +1,50 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const App = () => {
-  const [balence, setBalence] = useState(0)
+  const [balance, setBalance] = useState(0)
   const [search, setSearch] = useState("")
-  function addMoney(amt) {
-    const amount = localStorage.getItem("balence")
-    if (amount) {
-      setBalence(Number(amount)+amt)
-      localStorage.setItem("balence", JSON.stringify(Number(amount)+amt))
-      setSearch("")
+
+  // Load balance from localStorage on first render
+  useEffect(() => {
+    const saved = localStorage.getItem("balance")
+    if (saved) {
+      setBalance(JSON.parse(saved))
     }
-    else {
-      setBalence(balence + amt)
-      localStorage.setItem("balence", JSON.stringify(balence + amt))
-      setSearch("")
-    }
+  }, [])
+
+  function addMoney(e) {
+    e.preventDefault()   // stop page reload
+
+    const newBalance = balance + Number(search)
+    setBalance(newBalance)
+    localStorage.setItem("balance", JSON.stringify(newBalance))
+    setSearch("")
   }
+
   return (
-    <div className='bg-gray-500 h-[100vh] w-[100vw] flex flex-col justify-center items-center gap-6 text-white  font-bold'>
+    <div className='bg-gray-500 h-[100vh] w-[100vw] flex flex-col justify-center items-center gap-6 text-white font-bold'>
       <h1 className='text-3xl'>Expense Tracker App</h1>
-      {(balence != 0) ? (
+
+      {balance !== 0 ? (
         <>
-            <h2 className='text-3xl'>Balence-0 : {balence}</h2>
-           <form action="submit" className='flex flex-col gap-4'>
-            <input type="number" onChange={(e) => setSearch(Number(e.target.value))} placeholder='Enter amount' className='p-2 rounded-md text-black border-2' />
-            <button type="submit" onClick={() => addMoney(search)}>Add money</button>
-          </form>
+          <h2 className='text-3xl'>Balance : {balance}</h2>
         </>
       ) : (
-        <>
-          <h3 className='text-3xl'>You dont have money,add money</h3>
-          <form action="submit" className='flex flex-col gap-4'>
-            <input type="number" onChange={(e) => setSearch(Number(e.target.value))} placeholder='Enter amount' className='p-2 rounded-md text-black border-2' />
-            <button type="submit" onClick={() => addMoney(search)}>Add money</button>
-          </form>
-        </>
-      )
-      }
+        <h3 className='text-3xl'>You don’t have money, add money</h3>
+      )}
+
+      <form onSubmit={addMoney} className='flex flex-col gap-4'>
+        <input
+          type="number"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder='Enter amount'
+          className='p-2 rounded-md text-black border-2'
+        />
+        <button type="submit" className='bg-blue-600 p-2 rounded-md'>
+          Add money
+        </button>
+      </form>
     </div>
   )
 }
