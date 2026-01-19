@@ -1,34 +1,44 @@
+import React from 'react'
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
-  console.log("Hello world");
+const App = () => {
+  const [balence, setBalence] = useState(0)
+  const [search, setSearch] = useState("")
+  function addMoney(amt) {
+    const amount = localStorage.getItem("balence")
+    if (amount) {
+      setBalence(Number(amount)+amt)
+      localStorage.setItem("balence", JSON.stringify(Number(amount)+amt))
+      setSearch("")
+    }
+    else {
+      setBalence(balence + amt)
+      localStorage.setItem("balence", JSON.stringify(balence + amt))
+      setSearch("")
+    }
+  }
   return (
-    <>
-      <div className='bg-red-700 '>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='bg-gray-500 h-[100vh] w-[100vw] flex flex-col justify-center items-center gap-6 text-white  font-bold'>
+      <h1 className='text-3xl'>Expense Tracker App</h1>
+      {(balence != 0) ? (
+        <>
+            <h2 className='text-3xl'>Balence-0 : {balence}</h2>
+           <form action="submit" className='flex flex-col gap-4'>
+            <input type="number" onChange={(e) => setSearch(Number(e.target.value))} placeholder='Enter amount' className='p-2 rounded-md text-black border-2' />
+            <button type="submit" onClick={() => addMoney(search)}>Add money</button>
+          </form>
+        </>
+      ) : (
+        <>
+          <h3 className='text-3xl'>You dont have money,add money</h3>
+          <form action="submit" className='flex flex-col gap-4'>
+            <input type="number" onChange={(e) => setSearch(Number(e.target.value))} placeholder='Enter amount' className='p-2 rounded-md text-black border-2' />
+            <button type="submit" onClick={() => addMoney(search)}>Add money</button>
+          </form>
+        </>
+      )
+      }
+    </div>
   )
 }
 
